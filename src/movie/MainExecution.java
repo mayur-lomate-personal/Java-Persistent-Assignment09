@@ -197,16 +197,32 @@ public class MainExecution {
 	}
 	
 	List<Movie> getMoviesByActor(String actors[]) throws SQLException {
+		ArrayList<Movie> movies = new ArrayList<Movie>();
 		for(String actor : actors) {
-			PreparedStatement st = con.prepareStatement("select movie_name from java_ass09_movies_info where movie_id in(select movie_id from java_ass09_movies_cast where cast_name=?)");
+			PreparedStatement st = con.prepareStatement("select * from java_ass09_movies_info where movie_id in(select movie_id from java_ass09_movies_cast where cast_name=?)");
 			st.setString(1, actor);
 			ResultSet rs = st.executeQuery();
-			System.out.println(actor + " :");
 			while(rs.next()) {
-				System.out.println(rs.getString(1));
+				st = con.prepareStatement("select cast_name from java_ass09_movies_cast where movie_id=?");
+				st.setInt(1, rs.getInt(1));
+				ResultSet rs1 = st.executeQuery();
+				ArrayList<String> cast = new ArrayList<String>();
+				while(rs1.next()) {
+					cast.add(rs1.getString(1));
+				}
+				movies.add(new Movie(
+						rs.getInt(1),
+						rs.getString(2),
+						Category.values()[rs.getInt(3)],
+						Language.values()[rs.getInt(4)],
+						rs.getDate(5).toLocalDate(),
+						cast,
+						rs.getDouble(6),
+						rs.getDouble(7)
+						));
 			}
 		}
-		return null;
+		return movies;
 	}
 	
 	void updateRatings(int movieId, double rating, List<Movie> movies) {

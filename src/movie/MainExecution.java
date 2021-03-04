@@ -144,9 +144,7 @@ public class MainExecution {
 		FileOutputStream file = new FileOutputStream(fileName); 
         ObjectOutputStream out = new ObjectOutputStream(file); 
 
-        for(Movie movie : movies) {
-        	out.writeObject(movie);
-        }
+        out.writeObject(movies);
           
         out.close(); 
         file.close();
@@ -156,12 +154,10 @@ public class MainExecution {
 		FileInputStream file = new FileInputStream(fileName); 
         ObjectInputStream in = new ObjectInputStream(file); 
         
-        ArrayList<Movie> movies = new ArrayList<Movie>();
+        ArrayList<Movie> movies;
           
         // Method for deserialization of object 
-        while(in.available() != 0) {
-        	movies.add((Movie)in.readObject());
-        }
+        movies = (ArrayList<Movie>) in.readObject();
           
         in.close(); 
         file.close();
@@ -294,6 +290,7 @@ public class MainExecution {
 		obj.addMovie(new Movie(), movies);
 		obj.serializeMovies(movies, "serializedMovies.bat");
 		movies = obj.deserializeMovies("serializedMovies.bat");
+		System.out.println(movies);
 		System.out.println(obj.getMoviesReleasedInYear(2019));
 		System.out.println(obj.getMoviesByActor(new String[] {"Scarlett Johansson", "Jeremy Renner"}));
 		obj.updateRatings(1, 4.5, movies);
